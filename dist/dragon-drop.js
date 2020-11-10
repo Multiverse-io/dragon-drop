@@ -6706,7 +6706,7 @@ function useNative () {
 module.exports = useNative() ? NativeCustomEvent :
 
 // IE >= 9
-'undefined' !== typeof document && 'function' === typeof document.createEvent ? function CustomEvent (type, params) {
+'function' === typeof document.createEvent ? function CustomEvent (type, params) {
   var e = document.createEvent('CustomEvent');
   if (params) {
     e.initCustomEvent(type, params.bubbles, params.cancelable, params.detail);
@@ -7249,8 +7249,6 @@ module.exports = {
 (function (global){
 'use strict';
 
-// Berners magic test comment
-
 var emitter = require('contra/emitter');
 var crossvent = require('crossvent');
 var classes = require('./classes');
@@ -7374,16 +7372,13 @@ function dragula (initialContainers, options) {
       release({});
       return; // when text is selected on an input and then dragged, mouseup doesn't fire. this is our only hope
     }
-
-    // truthy check fixes #239, equality fixes #207, fixes #501
-    if ((e.clientX !== void 0 && Math.abs(e.clientX - _moveX) <= (o.slideFactorX || 0)) &&
-      (e.clientY !== void 0 && Math.abs(e.clientY - _moveY) <= (o.slideFactorY || 0))) {
+    // truthy check fixes #239, equality fixes #207
+    if (e.clientX !== void 0 && e.clientX === _moveX && e.clientY !== void 0 && e.clientY === _moveY) {
       return;
     }
-
     if (o.ignoreInputTextSelection) {
-      var clientX = getCoord('clientX', e) || 0;
-      var clientY = getCoord('clientY', e) || 0;
+      var clientX = getCoord('clientX', e);
+      var clientY = getCoord('clientY', e);
       var elementBehindCursor = doc.elementFromPoint(clientX, clientY);
       if (isInput(elementBehindCursor)) {
         return;
@@ -7491,8 +7486,8 @@ function dragula (initialContainers, options) {
       return;
     }
     var item = _copy || _item;
-    var clientX = getCoord('clientX', e) || 0;
-    var clientY = getCoord('clientY', e) || 0;
+    var clientX = getCoord('clientX', e);
+    var clientY = getCoord('clientY', e);
     var elementBehindCursor = getElementBehindPoint(_mirror, clientX, clientY);
     var dropTarget = findDropTarget(elementBehindCursor, clientX, clientY);
     if (dropTarget && ((_copy && o.copySortSource) || (!_copy || dropTarget !== _source))) {
@@ -7614,8 +7609,8 @@ function dragula (initialContainers, options) {
     }
     e.preventDefault();
 
-    var clientX = getCoord('clientX', e) || 0;
-    var clientY = getCoord('clientY', e) || 0;
+    var clientX = getCoord('clientX', e);
+    var clientY = getCoord('clientY', e);
     var x = clientX - _offsetX;
     var y = clientY - _offsetY;
 
@@ -7801,12 +7796,12 @@ function getScroll (scrollProp, offsetProp) {
 }
 
 function getElementBehindPoint (point, x, y) {
-  point = point || {};
-  var state = point.className || '';
+  var p = point || {};
+  var state = p.className;
   var el;
-  point.className += ' gu-hide';
+  p.className += ' gu-hide';
   el = doc.elementFromPoint(x, y);
-  point.className = state;
+  p.className = state;
   return el;
 }
 
