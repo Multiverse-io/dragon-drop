@@ -52,7 +52,7 @@
     "@babel/polyfill": "^7.0.0",
     "component-emitter": "^1.2.1",
     "dom-matches": "^2.0.0",
-    "dragula": "WhiteHatuk/dragula",
+    "dragula": "WhiteHatuk/dragula#59875bfe7e08162736ecb30317436d47daf2a871",
     "element-qsa-scope": "^1.0.1",
     "live-region": "^1.0.2",
     "optimal-select": "^4.0.1"
